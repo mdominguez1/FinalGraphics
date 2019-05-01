@@ -55,10 +55,22 @@ function setCamera0() {
     return cameraTemp;
 }
 
+function setCamera1() {
+    var cameraTemp = new THREE.PerspectiveCamera(100, aspRat, 1, 100);
+    cameraTemp.position.set(0, 50, -50);
+    cameraTemp.lookAt(scene.position);
+    currentCamera = 1;
+    return cameraTemp;
+}
+
 function draw() {
     buildGround();
 }
 
+/**
+ * Ground which signifies the asphalt the Plane will be placed on
+ * grey and large.
+ */
 function buildGround() {
     var planeGeo = new THREE.Geometry();
     var planelength = 500;
@@ -90,6 +102,31 @@ function renderScene() {
     renderer.render(scene, camera);
 }
 
+/**
+ * Event handler for key down events in the scene.
+ * 0(48/96) puts the camera back to its initial state
+ * 1(49/97) puts the camera in a perspective view looking at the propelors
+ * @param {any} event - event holding the keycodes 
+ */
 function onDocumentKeyDown(event) {
+    if (event.keyCode == 48 || event.keyCode == 96) {
+        // The camera is positioned at its initial position in the upper
+        // right corner closest to the viewer
 
+        if (currentCamera != 0) {
+            scene.remove(camera);
+            camera = setCamera0();
+            scene.add(camera);
+            renderScene();
+        }
+    } else if (event.keyCode == 49 || 97) {
+        // Moves the camera in front of the propelors 
+
+        if (currentCamera != 1) {
+            scene.remove(camera);
+            camera = setCamera1();
+            scene.add(camera);
+            renderScene();
+        }
+    }
 }
