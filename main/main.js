@@ -49,13 +49,40 @@ function init() {
 function setCamera0() {
     var cameraTemp = new THREE.OrthographicCamera(-aspRat * viewLength / 2, aspRat * viewLength / 2,
         viewLength / 2, -viewLength / 2, -1000, 1000);
-    cameraTemp.position.set(190, 150, -200);
+    cameraTemp.position.set(100, 100, 190);
     cameraTemp.lookAt(scene.position);
     currentCamera = 0;
     return cameraTemp;
 }
 
 function draw() {
+    buildGround();
+}
+
+function buildGround() {
+    var planeGeo = new THREE.Geometry();
+    var planelength = 500;
+    planeGeo.vertices.push(
+        new THREE.Vector3(-planelength, 0, -planelength),
+        new THREE.Vector3(planelength, 0, -planelength),
+        new THREE.Vector3(planelength, 0, planelength),
+        new THREE.Vector3(-planelength, 0, planelength)
+    );
+
+    planeGeo.faces.push(
+        new THREE.Face3(0, 1, 2),
+        new THREE.Face3(2,3,0)
+    );
+
+    var material = new THREE.MeshBasicMaterial({
+        color: 0x242424,
+        transparent: false,
+        side: THREE.DoubleSide
+    });
+
+    var plane = new THREE.Mesh(planeGeo, material);
+
+    scene.add(plane);
 
 }
 
