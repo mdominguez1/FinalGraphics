@@ -55,17 +55,26 @@ function setCamera0() {
     return cameraTemp;
 }
 
+/**
+ * function which will return a perspective camera looking at the propelor
+ */
 function setCamera1() {
     var cameraTemp = new THREE.PerspectiveCamera(100, aspRat, 1, 100);
-    cameraTemp.position.set(0, 50, -50);
+    cameraTemp.position.set(0, 50, -100);
     cameraTemp.lookAt(scene.position);
     currentCamera = 1;
     return cameraTemp;
 }
 
+/**
+ * function which will draw all required items for the scene.
+ * This function will call all other functions needed to render the entire scene.
+ */
 function draw() {
     buildGround();
+    buildPropelor();
 }
+
 
 /**
  * Ground which signifies the asphalt the Plane will be placed on
@@ -96,6 +105,45 @@ function buildGround() {
 
     scene.add(plane);
 
+}
+
+/**
+ * function which will draw all the objects for the propelor 
+ */
+function buildPropelor() {
+    propPivot.position.set(0, 20, -20)
+
+    //base for the propelors to hold onto - will be connected to base of the plane
+    var baseGeometry = new THREE.CylinderGeometry(20, 20, 10, 50);
+    var baseMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    var base = new THREE.Mesh(baseGeometry, baseMaterial);
+    base.rotateX(Math.PI / 2);
+
+    //Lathe - for a portion of the cone where the propelors will spin on
+    var points = [];
+    for (var i = 0; i < 10; i++) {
+        points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, (i - 5) * 2));
+    }
+    var latheGeometry = new THREE.LatheGeometry(points);
+    var latheMaterial = new THREE.MeshBasicMaterial({
+        color: 0xff0000
+    });
+    var lathe = new THREE.Mesh(latheGeometry, latheMaterial);
+    lathe.position.set(0, 0, -15);
+    lathe.rotateX(Math.PI / 2);
+
+    //Cap for the cone
+    var circleGeometry = new THREE.CircleGeometry(12, 50);
+    var circleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    var circle = new THREE.Mesh(circleGeometry, circleMaterial);
+    circle.position.set(0, -4, -15);
+    circle.rotateX(-Math.PI / 2); 
+
+
+    propPivot.add(base);
+    propPivot.add(lathe);
+    propPivot.add(circle);
+    scene.add(propPivot);
 }
 
 function renderScene() {
