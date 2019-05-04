@@ -91,25 +91,56 @@ function makeBody() {
 	cabinBottomMesh.position.set(0, -40, 40);
 	body.add(cabinBottomMesh);
 
+	var cabinEnd = new THREE.Shape();
+	cabinEnd.moveTo(40, 40);
+	//cabinEnd.lineTo(40, 40);
+	cabinEnd.bezierCurveTo(50, 10, 50, -10, 40, -40);
+	cabinEnd.bezierCurveTo(10, -50, -10, -50, -40, -40);
+	cabinEnd.bezierCurveTo(-50, -10, -50, 10, -40, 40);
+	//cabinEnd.lineTo(-40, 80);
+	cabinEnd.lineTo(40, 40);
+	var cabinEndExtrude = new THREE.ExtrudeGeometry(cabinEnd, {amount: 120, bevelEnabled: false});
+	var cabinEndMesh = new THREE.Mesh(cabinEndExtrude, cabinMat);
+	cabinEndMesh.castShadow = true;
+	cabinEndMesh.receiveShadow = true;
+	cabinEndMesh.rotateY(Math.PI/2);
+	cabinEndMesh.position.set(0, 0 , 40);
+	body.add(cabinEndMesh);
+
 	airplane.add(body);
 }
 
 function makeTail() {
-	var tail = new THREE.Shape();
-	tail.moveTo(0, 40);
-	tail.bezierCurveTo(40, 50, 80, 50, 120, 70);
-	//tail.lineTo(160, 120);
-	tail.bezierCurveTo(140, 160, 160, 160, 160, 80);
-	tail.lineTo(160, 20);
-	//tail.bezierCurveTo(160, 0, 150, 0, 140, 0);
-	tail.bezierCurveTo(160, -40, 40, -10, 0, -40);
-	//tail.lineTo(0, -40);
-	tail.lineTo(0, 40);
-	var extrude = new THREE.ExtrudeGeometry(tail, {amount: 80, bevelEnabled: false});
+	var tail = new THREE.SphereGeometry(20, 60, 60);
+	tail.applyMatrix( new THREE.Matrix4().makeScale( 1.8, .5, 4.0 ) );
 	var tailMat = new THREE.MeshPhongMaterial({color: 0xff0000, flatShading:THREE.FlatShading});
-	var tailMesh = new THREE.Mesh(extrude, tailMat);
-
+	var tailMesh = new THREE.Mesh(tail, tailMat);
+	tailMesh.position.set(160, 40 , 40);
+	tailMesh.rotateX(Math.PI/2);
+	tailMesh.rotateY(-Math.PI/16);
 	airplane.add(tailMesh);
+
+	var horizTail = new THREE.SphereGeometry(10, 60, 60);
+	horizTail.applyMatrix( new THREE.Matrix4().makeScale( 2.0, .5, 8.0 ) );
+	var horizMesh = new THREE.Mesh(horizTail, tailMat);
+	horizMesh.position.set(160, 80 , 40);
+	airplane.add(horizMesh);
+
+	var tailEnd = new THREE.Shape();
+	tailEnd.moveTo(40, 40);
+	tailEnd.bezierCurveTo( 130, 20, 130, -40, 40, -40);
+	//tailEnd.bezierCurveTo( 0, -30, 0, -10, 40, -40);
+	tailEnd.lineTo(40,40);
+	var extrude = new THREE.ExtrudeGeometry(tailEnd, {amount: 80, bevelEnabled: false});
+	var tailEndMesh = new THREE.Mesh(extrude, tailMat);
+	tailEndMesh.position.set(80, 0, 0);
+	//tailEndMesh.rotateZ(Math.PI);
+	airplane.add(tailEndMesh);
+
+	//var tEnd1 = tailEndMesh.clone();
+	//tEnd1.rotateX(Math.PI);
+	//airplane.add(tEnd1);
+
 }
 
 function makeWing() {
